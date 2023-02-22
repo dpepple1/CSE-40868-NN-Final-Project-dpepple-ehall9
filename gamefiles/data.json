@@ -1,5 +1,13 @@
 {
   "info": {
+    "better_stage": {
+      "address": 1151,
+      "type": ">n4"
+    },
+    "dead": {
+      "address": 123,
+      "type": "|u1"
+    },
     "enemies": {
       "address": 1172,
       "type": "|u1"
@@ -29,10 +37,6 @@
       "type": ">n8"
     },
     "stage": {
-      "address": 1151,
-      "type": ">n4"
-    },
-    "better_stage":{
       "address": 1151,
       "type": ">n4"
     }
