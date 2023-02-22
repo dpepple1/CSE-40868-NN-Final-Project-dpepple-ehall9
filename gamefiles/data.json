@@ -1,0 +1,32 @@
+{
+  "info": {
+    "enemies": {
+      "address": 1172,
+      "type": "|u1"
+    },
+    "hits": {
+      "address": 1192,
+      "type": ">d8"
+    },
+    "lives": {
+      "address": 1159,
+      "type": "|u1"
+    },
+    "position": {
+      "address": 22,
+      "type": "|u1"
+    },
+    "score": {
+      "address": 225,
+      "type": ">n6"
+    },
+    "shots": {
+      "address": 1184,
+      "type": ">n8"
+    },
+    "stage": {
+      "address": 1151,
+      "type": ">u4"
+    }
+  }
+}
