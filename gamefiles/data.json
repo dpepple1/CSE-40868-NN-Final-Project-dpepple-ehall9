@@ -4,6 +4,10 @@
       "address": 1172,
       "type": "|u1"
     },
+    "hi-score": {
+      "address": 247,
+      "type": ">n8"
+    },
     "hits": {
       "address": 1192,
       "type": ">d8"
@@ -26,7 +30,11 @@
     },
     "stage": {
       "address": 1151,
-      "type": ">u4"
+      "type": ">n4"
+    },
+    "better_stage":{
+      "address": 1151,
+      "type": ">n4"
     }
   }
 }
