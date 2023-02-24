@@ -4,7 +4,7 @@ env = retro.make(game="GalagaDemonsOfDeath-Nes")
 
 observation = env.reset()
 
-for _ in range(1000000):
+while True:
     action = env.action_space.sample() 
     observation, reward, terminated, truncated = env.step(action)
     env.render()
