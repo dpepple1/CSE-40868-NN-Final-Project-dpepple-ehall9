@@ -2,14 +2,11 @@ import gymnasium as gym
 import retro
 env = retro.make(game="GalagaDemonsOfDeath-Nes")
 
-observation = env.reset()
-
+obs = env.reset()
 while True:
-    action = env.action_space.sample() 
-    observation, reward, terminated, truncated = env.step(action)
+    action = env.action_space.sample()
+    obs, rewards, done, info = env.step(action)
     env.render()
-    if terminated or truncated:
-        observation = env.reset()
-        print('terminated')
 
-env.close()
+    if done:
+        break
