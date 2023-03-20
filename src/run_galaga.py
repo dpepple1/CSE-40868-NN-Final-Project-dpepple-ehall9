@@ -10,5 +10,6 @@ while True:
     env.render()
     if terminated or truncated:
         observation = env.reset()
+        print('terminated')
 
 env.close()
