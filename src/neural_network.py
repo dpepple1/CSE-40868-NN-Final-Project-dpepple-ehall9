@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-class PGNN(nn.module):
+class PGNN(nn.Module):
     def __init__(self, n_observations, n_actions):
         super(PGNN, self).__init__()
 
@@ -11,7 +11,7 @@ class PGNN(nn.module):
                 
         #Activation functions
         self.elu = nn.ELU()
-        self.softmax = nn.Softmax() #Softmax in place of sigmoid
+        self.softmax = nn.Softmax(dim=1) #Softmax in place of sigmoid
 
         self.saved_log_probs = []
         self.rewards = []
