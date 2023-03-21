@@ -34,13 +34,15 @@ LOG_INTERVAL = 10
 
 
 env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.RAM)
-print('observation space:', env.observation_space.shape)
-print('action space:', env.action_space.shape)
+print("Action Space Shape:", env.action_space.shape)
 
 
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+print(device)
 
 policy = PGNN(10240,9)
-optimizer = optim.Adam(policy.parameters(), lr=0.001)
+policy.to(device)
+optimizer = optim.Adam(policy.parameters(), lr=0.01)
 eps = np.finfo(np.float32).eps.item()
 
 def select_action(state):
@@ -50,7 +52,9 @@ def select_action(state):
     hence the Categorical() distribution. See Geron 617 for info.
     '''
     state = torch.from_numpy(state).float().unsqueeze(0)
+    state = state.to(device)    
     probs = policy(state)
+    #print(probs)
     m = Categorical(probs)
     action = m.sample()
     policy.saved_log_probs.append(m.log_prob(action)) 
@@ -69,6 +73,7 @@ def finish_episode():
         policy_loss.append(-log_prob * R)
     optimizer.zero_grad()
     policy_loss = torch.cat(policy_loss).sum()
+    #print(policy_loss)
     policy_loss.backward()
     optimizer.step()
     del policy.rewards[:]
@@ -79,7 +84,7 @@ def main():
     for i_episode in range(EPISODES):
         state= env.reset()        
         ep_reward = 0
-        for t in range(1, MAX_STEPS):  # Don't infinite loop while learning
+        for t in count():  # Don't infinite loop while learning
             action = select_action(state)
             state, reward, done, info = env.step([action])
             if RENDER:
