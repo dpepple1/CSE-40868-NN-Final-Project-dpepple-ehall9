@@ -16,6 +16,7 @@ import numpy as np
 from itertools import count
 from collections import deque
 import retro
+import random
 
 import torch
 import torch.nn as nn
@@ -54,11 +55,19 @@ def select_action(state):
     state = torch.from_numpy(state).float().unsqueeze(0)
     state = state.to(device)    
     probs = policy(state)
-    #print(probs)
-    m = Categorical(probs)
-    action = m.sample()
+    action = [1 if random.random() < prob else 0 for prob in probs[0]]
+    #print(action)
+    #return torch.tensor(action)
+
+    #m = Categorical(probs)
+    #action = m.sample()
     policy.saved_log_probs.append(m.log_prob(action)) 
-    return action.item()
+    print(action)
+    print(m.log_prob(action))
+    print(action.item())
+    exit()
+    #return action.item()
+    #return 2
 
 def finish_episode():
     R = 0
@@ -86,7 +95,7 @@ def main():
         ep_reward = 0
         for t in count():  # Don't infinite loop while learning
             action = select_action(state)
-            state, reward, done, info = env.step([action])
+            state, reward, done, info = env.step(action)
             if RENDER:
                 env.render()
             policy.rewards.append(reward)
