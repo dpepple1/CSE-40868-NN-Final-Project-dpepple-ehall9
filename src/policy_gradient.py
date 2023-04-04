@@ -34,7 +34,7 @@ LOG_INTERVAL = 10
 
 
 env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.RAM)
-print("Action Space Shape:", env.action_space.shape)
+print("Action Space Shape:", env.action_space)
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
