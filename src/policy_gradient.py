@@ -22,28 +22,30 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torch.distributions import Categorical
+from torch.distributions import Categorical, Bernoulli
 
 from neural_network import PGNN
+from Discretizer import GalagaDiscretizer
 
 #Training Parameters
 EPISODES = 10
-MAX_STEPS = 1000
-GAMMA = 0.99
+MAX_STEPS = 100
+GAMMA = 0.95
 RENDER = True
 LOG_INTERVAL = 10
 
 
-env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.RAM)
+env = retro.make(game="GalagaDemonsOfDeath-Nes[A] - Copy", obs_type=retro.Observations.RAM)
+env = GalagaDiscretizer(env)
 print("Action Space Shape:", env.action_space.shape)
 
 
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-policy = PGNN(10240,9)
+policy = PGNN(10,6)
 policy.to(device)
-optimizer = optim.Adam(policy.parameters(), lr=0.01)
+optimizer = optim.Adam(policy.parameters(), lr=0.0001)
 eps = np.finfo(np.float32).eps.item()
 
 def select_action(state):
@@ -53,20 +55,14 @@ def select_action(state):
     hence the Categorical() distribution. See Geron 617 for info.
     '''
     state = torch.from_numpy(state).float().unsqueeze(0)
-    state = state.to(device)    
+    state = state.to(device) 
+    print(state) 
     probs = policy(state)
-    action = [1 if random.random() < prob else 0 for prob in probs[0]]
-    #print(action)
-    #return torch.tensor(action)
-
-    #m = Categorical(probs)
-    #action = m.sample()
+    #print(probs)
+    m = Categorical(probs)
+    action = m.sample()
     policy.saved_log_probs.append(m.log_prob(action)) 
-    print(action)
-    print(m.log_prob(action))
-    print(action.item())
-    exit()
-    #return action.item()
+    return action.item()
     #return 2
 
 def finish_episode():
@@ -74,7 +70,7 @@ def finish_episode():
     policy_loss = []
     returns = deque()
     for r in policy.rewards[::-1]:
-        R = r + GAMMA * R
+        R = r + GAMMA * R 
         returns.appendleft(R)
     returns = torch.tensor(returns)
     returns = (returns - returns.mean()) / (returns.std() + eps)
@@ -87,15 +83,20 @@ def finish_episode():
     optimizer.step()
     del policy.rewards[:]
     del policy.saved_log_probs[:]
+    
 
 def main():
     running_reward = 10
     for i_episode in range(EPISODES):
-        state= env.reset()        
+        state = env.reset()        
         ep_reward = 0
-        for t in count():  # Don't infinite loop while learning
-            action = select_action(state)
+        state, reward, done, info = env.step(0)
+        obs = np.array(list(info.values()))
+        #break
+        for t in range(MAX_STEPS):  # Don't infinite loop while learning'
+            action = select_action(obs)
             state, reward, done, info = env.step(action)
+            obs = np.array(list(info.values()))
             if RENDER:
                 env.render()
             policy.rewards.append(reward)
