@@ -6,7 +6,7 @@ from imagetest import EnemyFinder
 
 env = retro.make(game="GalagaDemonsOfDeath-Nes[A] - Copy")
 env = GalagaDiscretizer(env)
-ef = EnemyFinder()
+ef = EnemyFinder(224, 240, 22, 24)
 
 obs = env.reset()
 
@@ -15,8 +15,8 @@ for i in range(200):
     #print(action)
     obs, rewards, done, info = env.step(action)
     #imagetest.find_enemy(obs, i)
-    ef.find_enemies(obs, i)
-    #env.render()
+    print(ef.fill_grid(obs))
+    env.render()
 
     if done:
         break
