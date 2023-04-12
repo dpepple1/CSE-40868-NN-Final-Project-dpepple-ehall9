@@ -126,7 +126,7 @@ def main():
     mode = 'train'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE, record='.')
+    env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE, record='.')
     env = GalagaDiscretizer(env)
 
     xres, yres, _ = env.observation_space.shape
