@@ -37,6 +37,7 @@ class EnemyFinder():
             self.templates.append(template)
 
         self.ship = cv.imread(f'Ship Template/ship.png',cv.IMREAD_GRAYSCALE)
+        self.ship = cv.resize(self.ship, (0, 0), fx = 0.35, fy = 0.35)
 
 
     def find_enemies(self, obs):
@@ -52,7 +53,6 @@ class EnemyFinder():
             for pt in zip(*loc[::-1]):
                 #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 points.append(pt)
-        
         return points
 
     def find_self(self, obs):
@@ -62,7 +62,7 @@ class EnemyFinder():
         w, h = self.ship.shape[::-1]
         res = cv.matchTemplate(img_gray,self.ship,cv.TM_CCOEFF_NORMED)
         print(res)
-        threshold = 0.6
+        threshold = 0.7
         loc = np.where(res>=threshold)
         for pt in zip(*loc[::-1]):
                 cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
