@@ -22,6 +22,9 @@ def discount_rewards(rewards, gamma=0.99):
 
 def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, batch_size=10, gamma=0.99):
     
+    best_model_path = '\\Models\\best_model.pth'
+    best_reward = 0
+
     # Set up lists to hold results
     total_rewards = []
     batch_rewards = []
@@ -55,9 +58,9 @@ def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, ba
             action = np.random.choice(action_space, p=action_probs)
             s_1, r, done, _ = env.step(action)
             step += 1
-            if step > 300:
-                done = True
-            #env.render()
+            #if step > 1000:
+            #    done = True
+            env.render()
 
             states.append(s_0)
             probs.append(action_probs)
@@ -72,10 +75,16 @@ def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, ba
                 batch_probs.extend(probs)
                 batch_counter += 1
                 total_rewards.append(sum(rewards))
-                print('reward', sum(rewards))
+                print('Reward: ', sum(rewards))
+
+                if sum(rewards) > best_reward:
+                    print('Saving model...')
+                    torch.save(policy_estimator.state_dict(), best_model_path)
+                    best_reward = sum(rewards)
 
                 #If batch is complete, updatae network
                 if batch_counter == batch_size:
+                    print('Batch Over')
                     optimizer.zero_grad()
 
                     state_tensor = torch.FloatTensor(np.array(batch_states))
@@ -86,14 +95,16 @@ def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, ba
                     prob_tensor = torch.FloatTensor(np.array(batch_probs))
 
                     #Calculate loss
-                    #state_tensor = state_tensor.to(device)
-                    print(action_tensor)
+                    action_tensor = action_tensor.unsqueeze(1)
+                    #print(action_tensor)
                     #logprob = torch.log(policy_estimator(state_tensor)).cpu()
-                    logprob = torch.log(prob_tensor).T
-                    print(logprob)
+                    logprob = torch.log(prob_tensor)
+                    #print(logprob)
                     selected_logprobs = reward_tensor * torch.gather(logprob, 1, action_tensor).squeeze()
+                    #print(selected_logprobs)
                     loss = -selected_logprobs.mean()
 
+                    loss.requires_grad = True
                     #Calculate gradients
                     loss.backward()
                     #Apply gradients
@@ -106,7 +117,7 @@ def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, ba
 
                 avg_rewards = np.mean(total_rewards[-100:])
                 #Print running average
-                #print("\rEp: {} Average of last 100:" + "{:.2f}".format(ep + 1, avg_rewards), end="")
+                print("Ep: {} Average of last 100:" + "{:.2f}".format(ep + 1, avg_rewards), end="\n")
                 ep += 1
 
     return total_rewards
@@ -115,7 +126,7 @@ def main():
     mode = 'train'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE)
+    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE, record='.')
     env = GalagaDiscretizer(env)
 
     xres, yres, _ = env.observation_space.shape
