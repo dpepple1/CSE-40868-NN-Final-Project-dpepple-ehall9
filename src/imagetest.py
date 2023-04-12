@@ -62,6 +62,6 @@ class EnemyFinder():
             xmapped = point[0] * self.xdiv // self.xres
             ymapped = point[1] * self.ydiv // self.yres
 
-            grid[xmapped][ymapped] = 1
+            grid[xmapped][ymapped] = 1.0
         
         return grid

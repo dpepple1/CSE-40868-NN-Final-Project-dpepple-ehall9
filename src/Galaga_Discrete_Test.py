@@ -2,7 +2,7 @@ import retro
 from nes_py.wrappers import JoypadSpace
 from Discretizer import Discretizer, GalagaDiscretizer
 
-env = retro.make(game='GalagaDemonsOfDeath-Nes')
+env = retro.make(game='GalagaDemonsOfDeath-Nes[A]')
 env = GalagaDiscretizer(env)
 print(env.action_space)
 
