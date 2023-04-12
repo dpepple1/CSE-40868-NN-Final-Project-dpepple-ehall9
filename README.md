@@ -18,12 +18,12 @@ In the original Gym Environement, the action space consists of 9 possible action
 We are basing the training of our algorithm on the REINFORCE algorithm, which is a simple reinforcement learning policy gradient technique. Reinfocement learning requires a reward function, and score is used as it is the common metric of success in competition. Since softmax chooses a specific action, the loss function utilizes the reward from the chosen action compared to the probability of choosing another action.
 
 ### Contributions
-Evan: Image recognition using opencv to get enemy and ship locations
-Created template images for each enemy and for the player ship
-Used templates for matching, and scaled templates to correctly place ship
-Package versioning struggles and solutions
+Evan: Image recognition using opencv to get enemy and ship locations  
+Created template images for each enemy and for the player ship  
+Used templates for matching, and scaled templates to correctly place ship  
+Package versioning struggles and solutions  
 
-Derek: Configured MLP
-Setup Discretizer to change action space
-Implemented REINFORCE Algorithm from Towards Data Science article
-Implemented other policy gradient code that we eventually gave up on
+Derek: Configured MLP  
+Setup Discretizer to change action space  
+Implemented REINFORCE Algorithm from Towards Data Science article  
+Implemented other policy gradient code that we eventually gave up on  
