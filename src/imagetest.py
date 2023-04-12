@@ -61,27 +61,25 @@ class EnemyFinder():
         points = []
         w, h = self.ship.shape[::-1]
         res = cv.matchTemplate(img_gray,self.ship,cv.TM_CCOEFF_NORMED)
-        print(res)
         threshold = 0.7
         loc = np.where(res>=threshold)
         for pt in zip(*loc[::-1]):
-                cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+                #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
                 points.append(pt)
-        cv.imwrite('res.png',img_rgb)
-        #return ship
+        return points[-1]
 
             
     def fill_grid(self, obs):
         grid = np.zeros((self.xdiv, self.ydiv))
         points = self.find_enemies(obs)
-        #you = self.find_self(obs)
+        you = self.find_self(obs)
         self.find_self(obs)
         for point in points:
             xmapped = point[0] * self.xdiv // self.xres
             ymapped = point[1] * self.ydiv // self.yres
 
             grid[xmapped][ymapped] = 1
-        #xself = you[0] * self.xdiv // self.xres
-        #yself = you[1] * self.xdiv // self.xres
-        #grid[xself][yself] = 2
+        xself = you[0] * self.xdiv // self.xres
+        yself = you[1] * self.xdiv // self.xres
+        grid[xself][yself] = 2
         return grid
