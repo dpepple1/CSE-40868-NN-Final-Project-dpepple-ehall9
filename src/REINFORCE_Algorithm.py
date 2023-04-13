@@ -20,9 +20,8 @@ def discount_rewards(rewards, gamma=0.99):
     return r - r.mean()
 
 
-def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, batch_size=10, gamma=0.99):
+def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_episodes=2000, batch_size=10, gamma=0.99):
     
-    best_model_path = '\\Models\\best_model.pth'
     best_reward = 0
 
     # Set up lists to hold results
@@ -117,17 +116,19 @@ def reinforce(env, policy_estimator, enemy_finder, device, num_episodes=2000, ba
 
                 avg_rewards = np.mean(total_rewards[-100:])
                 #Print running average
-                print("Ep: {} Average of last 100:" + "{:.2f}".format(ep + 1, avg_rewards), end="\n")
+                print("Average of last 100:" + "{:.2f}".format(avg_rewards), end="\n")
                 ep += 1
 
     return total_rewards
 
 def main():
-    mode = 'train'
+
+    mode = 'eval'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE, record='.')
+    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE)
     env = GalagaDiscretizer(env)
+    best_model_path = 'src\\Models\\best_model.pth'
 
     xres, yres, _ = env.observation_space.shape
     xdiv = xres // 10
@@ -142,7 +143,25 @@ def main():
     actions = env.action_space.n
     model = MLP(xdiv * ydiv, actions)
 
-    rewards = reinforce(env, model, ef, device, batch_size=5)
+
+    if mode == 'train':
+        rewards = reinforce(env, model, ef, device, best_model_path, batch_size=5)
+    
+    else:
+        done = False
+        model.load_state_dict(torch.load(best_model_path))
+        s_0 = env.reset()
+        model.to(device)
+        while not done:
+            grid = ef.fill_grid(s_0)
+            grid = torch.tensor(grid.flatten()).float() #not sure whats up with the .float()
+            grid = grid.to(device)
+            action_probs = model(grid).detach().cpu().numpy()
+            action_space = np.arange(env.action_space.n)
+            action = np.random.choice(action_space, p=action_probs)
+            s_1, r, done, _ = env.step(action)
+            env.render()
+
 
 if __name__ == '__main__':
     main()
