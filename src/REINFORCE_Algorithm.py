@@ -126,7 +126,7 @@ def main():
     mode = 'eval'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE)
+    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE)
     env = GalagaDiscretizer(env)
     best_model_path = 'src\\Models\\best_model.pth'
 
@@ -157,9 +157,11 @@ def main():
             grid = torch.tensor(grid.flatten()).float() #not sure whats up with the .float()
             grid = grid.to(device)
             action_probs = model(grid).detach().cpu().numpy()
+            print(grid)
             action_space = np.arange(env.action_space.n)
             action = np.random.choice(action_space, p=action_probs)
             s_1, r, done, _ = env.step(action)
+            s_0 = s_1
             env.render()
 
 
