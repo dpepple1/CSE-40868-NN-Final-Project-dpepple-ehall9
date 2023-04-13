@@ -17,6 +17,11 @@ In the original Gym Environement, the action space consists of 9 possible action
 
 We are basing the training of our algorithm on the REINFORCE algorithm, which is a simple reinforcement learning policy gradient technique. Reinfocement learning requires a reward function, and score is used as it is the common metric of success in competition. Since softmax chooses a specific action, the loss function utilizes the reward from the chosen action compared to the probability of choosing another action.
 
+The first solution is able to average a score of roughly 5000 points per run.
+
+For the final solution, there are several problems we would like to fix.
+The image recognition has problem with rotation, which can be fixed by adding more rotated templates, but this also slows runtime. The network also does not well recognize the missiles that come out of the enemies, which should also be fixed with the addition of more templates. Template recognition also has some difficulty at the very left edge of the screen, for reasons currently unclear. The network is in the habit of going towards one corner of the screen and sitting there, which makes clearing stages more difficult. This will likely be the hardest to fix, as the ship's aversion to enemies also keeps it alive longer, so it will require taking the reward function significantly to balance risk and reward better.
+
 ### Contributions
 Evan: Image recognition using opencv to get enemy and ship locations  
 Created template images for each enemy and for the player ship  
