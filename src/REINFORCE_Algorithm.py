@@ -126,7 +126,7 @@ def main():
     mode = 'eval'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes[A]", obs_type=retro.Observations.IMAGE)
+    env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE)
     env = GalagaDiscretizer(env)
     best_model_path = 'src\\Models\\best_model.pth'
 
