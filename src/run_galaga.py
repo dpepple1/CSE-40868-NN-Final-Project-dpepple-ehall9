@@ -7,7 +7,7 @@ from MLP import MLP
 import numpy as np
 import torch
 
-env = retro.make(game="GalagaDemonsOfDeath-Nes[A] - Copy")
+env = retro.make(game="GalagaDemonsOfDeath-Nes")
 env = GalagaDiscretizer(env)
 ef = EnemyFinder(224, 240, 22, 24)
 
