@@ -20,7 +20,7 @@ ydiv = yres // 10
 
 model = MLP(xdiv * ydiv, 6)
 
-for i in range(200):
+for i in range(500):
     action = env.action_space.sample()
     #print(action)
     obs, rewards, done, info = env.step(5)

@@ -41,22 +41,40 @@ class EnemyFinder():
 
 
     def find_enemies(self, obs):
-        img_rgb = cv.cvtColor(obs, cv.COLOR_BGR2RGB)
-        img_gray = cv.cvtColor(img_rgb, cv.COLOR_BGR2GRAY)
+        im = obs[0:240,0:190]
+        im = cv.copyMakeBorder(im,0,0,0,5,cv.BORDER_CONSTANT)
+        im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
         points = []
-
-        for key, template in enumerate(self.templates):
-            w, h = template.shape[::-1]
-            res = cv.matchTemplate(img_gray,template,cv.TM_CCOEFF_NORMED)
-            threshold = 0.6
-            loc = np.where( res >= threshold)
-            for pt in zip(*loc[::-1]):
-                #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
-                points.append(pt)
+        assert im is not None, "file could not be read, check with os.path.exists()"
+        imgray = cv.cvtColor(im, cv.COLOR_BGR2GRAY)
+        ret, thresh = cv.threshold(imgray, 127, 255, 0)
+        contours, hierarchy = cv.findContours(thresh, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
+        for contour in contours:
+            if cv.contourArea(contour) > 0:
+                x,y,w,h = cv.boundingRect(contour)
+                points.append([x-(w/2),y-(h/2)])
+                cv.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
+        cv.imwrite("res.png",im)        
         return points
+        #img = obs[0:250,0:195]
+        #img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+        #img_gray = cv.cvtColor(img_rgb, cv.COLOR_BGR2GRAY)
+        #points = []
+        #for key, template in enumerate(self.templates):
+        #    w, h = template.shape[::-1]
+        #    res = cv.matchTemplate(img_gray,template,cv.TM_CCOEFF_NORMED)
+        #    threshold = 0.6
+        #    loc = np.where( res >= threshold)
+        #    for pt in zip(*loc[::-1]):
+        #        #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+        #        points.append(pt)
+        #print(points)
+        #cv.imwrite("res.png",img_rgb)
+        #return points
 
     def find_self(self, obs):
-        img_rgb = cv.cvtColor(obs, cv.COLOR_BGR2RGB)
+        img = obs[0:240,0:195]
+        img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
         img_gray = cv.cvtColor(img_rgb, cv.COLOR_RGB2GRAY)
         points = []
         w, h = self.ship.shape[::-1]
@@ -64,8 +82,9 @@ class EnemyFinder():
         threshold = 0.7
         loc = np.where(res>=threshold)
         for pt in zip(*loc[::-1]):
-                #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
-                points.append(pt)
+            points.append(pt)
+        #cv.rectangle(img_rgb, points[-1], (points[-1][0] + w, points[-1][1] + h), (0,0,255), 2)
+        #cv.imwrite("res.png",img_rgb)
         return points[-1]
 
             
@@ -75,11 +94,13 @@ class EnemyFinder():
         you = self.find_self(obs)
         self.find_self(obs)
         for point in points:
-            xmapped = point[0] * self.xdiv // self.xres
-            ymapped = point[1] * self.ydiv // self.yres
-
+            xmapped = int(point[0] * self.xdiv // self.xres)
+            ymapped = int(point[1] * self.ydiv // self.yres)
+            print(point)
             grid[xmapped][ymapped] = 1
         xself = you[0] * self.xdiv // self.xres
-        yself = you[1] * self.xdiv // self.xres
+        yself = you[1] * self.ydiv // self.yres
+        print(you)
         grid[xself][yself] = 2
+        print(grid)
         return grid
