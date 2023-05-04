@@ -42,6 +42,8 @@ class EnemyFinder():
         self.bolts = cv.imread(f'Template images/bolt.png',cv.IMREAD_GRAYSCALE)
         self.bolts = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
 
+        self.missile = cv.imread(f'Template images/missile.png',cv.IMREAD_GRAYSCALE)
+        self.missile = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
 
     def find_enemies(self, obs):
         im = obs[0:240,0:190]
@@ -89,7 +91,10 @@ class EnemyFinder():
             points.append(pt)
         #cv.rectangle(img_rgb, points[-1], (points[-1][0] + w, points[-1][1] + h), (0,0,255), 2)
         #cv.imwrite("res.png",img_rgb)
-        return points[-1]
+        if points:
+            return points[-1]
+        else:
+            return None
     
     def find_bolts(self, obs):
         img = obs[0:240,0:195]
@@ -100,6 +105,24 @@ class EnemyFinder():
         res = cv.matchTemplate(img_gray,self.bolts,cv.TM_CCOEFF_NORMED)
         threshold = 0.7
         loc = np.where(res>=threshold)
+<<<<<<< HEAD
+=======
+        for pt in zip(*loc[::-1]):
+            points.append(pt)
+            #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+        #cv.imwrite("res.png",img_rgb)
+        return points
+    
+    def enemy_missile(self, obs):
+        img = obs[0:240,0:195]
+        img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+        img_gray = cv.cvtColor(img_rgb, cv.COLOR_RGB2GRAY)
+        points = []
+        w, h = self.missile.shape[::-1]
+        res = cv.matchTemplate(img_gray,self.missile,cv.TM_CCOEFF_NORMED)
+        threshold = 0.7
+        loc = np.where(res>=threshold)
+>>>>>>> b7fc728bd6d106551a561b9ed3598a9bc0f63b5d
         for pt in zip(*loc[::-1]):
             points.append(pt)
             cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
@@ -110,6 +133,7 @@ class EnemyFinder():
         grid = np.zeros((self.xdiv, self.ydiv))
         points = self.find_enemies(obs)
         bolts = self.find_bolts(obs)
+        missiles = self.enemy_missile(obs)
         you = self.find_self(obs)
         self.find_self(obs)
         for point in points:
@@ -120,7 +144,19 @@ class EnemyFinder():
             xmapped = bolt[0] * self.xdiv // self.xres
             ymapped = bolt[1] * self.ydiv // self.yres
             grid[xmapped][ymapped] = 3
+<<<<<<< HEAD
         xself = you[0] * self.xdiv // self.xres
         yself = you[1] * self.ydiv // self.yres
         grid[xself][yself] = 2
+=======
+        for missile in missiles:
+            xmapped = missile[0] * self.xdiv // self.xres
+            ymapped = missile[1] * self.ydiv // self.yres
+            grid[xmapped][ymapped] = 3
+        if you:
+            xself = you[0] * self.xdiv // self.xres
+            yself = you[1] * self.ydiv // self.yres
+            grid[xself][yself] = 2
+        print(grid)
+>>>>>>> b7fc728bd6d106551a561b9ed3598a9bc0f63b5d
         return grid
