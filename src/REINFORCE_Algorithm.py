@@ -157,7 +157,7 @@ def main():
             grid = torch.tensor(grid.flatten()).float() #not sure whats up with the .float()
             grid = grid.to(device)
             action_probs = model(grid).detach().cpu().numpy()
-            print(grid)
+            #print(grid)
             action_space = np.arange(env.action_space.n)
             action = np.random.choice(action_space, p=action_probs)
             s_1, r, done, _ = env.step(action)

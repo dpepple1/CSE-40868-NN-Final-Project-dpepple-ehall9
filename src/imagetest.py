@@ -77,8 +77,8 @@ class EnemyFinder():
         for point in points:
             xmapped = point[0] * self.xdiv // self.xres
             ymapped = point[1] * self.ydiv // self.yres
-
             grid[xmapped][ymapped] = 1
+
         xself = you[0] * self.xdiv // self.xres
         yself = you[1] * self.xdiv // self.xres
         grid[xself][yself] = 2
