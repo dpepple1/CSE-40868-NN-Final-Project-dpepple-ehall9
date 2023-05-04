@@ -25,7 +25,7 @@ for i in range(500):
     #print(action)
     obs, rewards, done, info = env.step(5)
 
-    grid = ef.fill_grid(obs, i)
+    grid = ef.fill_grid(obs)
     grid = torch.tensor(grid.flatten()).float()
     #print(grid)
     action = model(grid)

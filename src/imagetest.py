@@ -43,7 +43,7 @@ class EnemyFinder():
         self.bolts = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
 
 
-    def find_enemies(self, obs, frame):
+    def find_enemies(self, obs):
         im = obs[0:240,0:190]
         im = cv.copyMakeBorder(im,0,0,0,5,cv.BORDER_CONSTANT)
         im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
@@ -100,14 +100,13 @@ class EnemyFinder():
         res = cv.matchTemplate(img_gray,self.bolts,cv.TM_CCOEFF_NORMED)
         threshold = 0.7
         loc = np.where(res>=threshold)
-        print("BITCH")
         for pt in zip(*loc[::-1]):
             points.append(pt)
             cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
         cv.imwrite("res.png",img_rgb)
         return points
             
-    def fill_grid(self, obs, frame):
+    def fill_grid(self, obs):
         grid = np.zeros((self.xdiv, self.ydiv))
         points = self.find_enemies(obs)
         bolts = self.find_bolts(obs)
@@ -124,5 +123,4 @@ class EnemyFinder():
         xself = you[0] * self.xdiv // self.xres
         yself = you[1] * self.ydiv // self.yres
         grid[xself][yself] = 2
-        print(grid)
         return grid
