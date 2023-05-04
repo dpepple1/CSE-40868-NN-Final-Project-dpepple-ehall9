@@ -24,8 +24,8 @@ for i in range(500):
     action = env.action_space.sample()
     #print(action)
     obs, rewards, done, info = env.step(5)
-    #imagetest.find_enemy(obs, i)
-    grid = ef.fill_grid(obs)
+
+    grid = ef.fill_grid(obs, i)
     grid = torch.tensor(grid.flatten()).float()
     #print(grid)
     action = model(grid)

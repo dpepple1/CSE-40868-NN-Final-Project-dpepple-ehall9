@@ -40,7 +40,7 @@ class EnemyFinder():
         self.ship = cv.resize(self.ship, (0, 0), fx = 0.35, fy = 0.35)
 
 
-    def find_enemies(self, obs):
+    def find_enemies(self, obs, frame):
         im = obs[0:240,0:190]
         im = cv.copyMakeBorder(im,0,0,0,5,cv.BORDER_CONSTANT)
         im = cv.cvtColor(im, cv.COLOR_BGR2RGB)
@@ -54,7 +54,7 @@ class EnemyFinder():
                 x,y,w,h = cv.boundingRect(contour)
                 points.append([x-(w/2),y-(h/2)])
                 cv.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
-        cv.imwrite("res.png",im)        
+        cv.imwrite(f'.\\frames\\res{frame:04}.png',im)        
         return points
         #img = obs[0:250,0:195]
         #img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
@@ -88,9 +88,9 @@ class EnemyFinder():
         return points[-1]
 
             
-    def fill_grid(self, obs):
+    def fill_grid(self, obs, frame):
         grid = np.zeros((self.xdiv, self.ydiv))
-        points = self.find_enemies(obs)
+        points = self.find_enemies(obs, frame)
         you = self.find_self(obs)
         self.find_self(obs)
         for point in points:
