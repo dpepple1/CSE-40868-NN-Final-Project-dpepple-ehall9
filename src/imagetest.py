@@ -39,6 +39,9 @@ class EnemyFinder():
         self.ship = cv.imread(f'Ship Template/ship.png',cv.IMREAD_GRAYSCALE)
         self.ship = cv.resize(self.ship, (0, 0), fx = 0.35, fy = 0.35)
 
+        self.bolts = cv.imread(f'Template images/bolt.png',cv.IMREAD_GRAYSCALE)
+        self.bolts = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
+
 
     def find_enemies(self, obs):
         im = obs[0:240,0:190]
@@ -53,8 +56,8 @@ class EnemyFinder():
             if cv.contourArea(contour) > 0:
                 x,y,w,h = cv.boundingRect(contour)
                 points.append([x-(w/2),y-(h/2)])
-                cv.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
-        cv.imwrite("res.png",im)        
+                #cv.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
+        #cv.imwrite("res.png",im)        
         return points
         #img = obs[0:250,0:195]
         #img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
@@ -86,21 +89,39 @@ class EnemyFinder():
         #cv.rectangle(img_rgb, points[-1], (points[-1][0] + w, points[-1][1] + h), (0,0,255), 2)
         #cv.imwrite("res.png",img_rgb)
         return points[-1]
-
+    
+    def find_bolts(self, obs):
+        img = obs[0:240,0:195]
+        img_rgb = cv.cvtColor(img, cv.COLOR_BGR2RGB)
+        img_gray = cv.cvtColor(img_rgb, cv.COLOR_RGB2GRAY)
+        points = []
+        w, h = self.bolts.shape[::-1]
+        res = cv.matchTemplate(img_gray,self.bolts,cv.TM_CCOEFF_NORMED)
+        threshold = 0.7
+        loc = np.where(res>=threshold)
+        print("BITCH")
+        for pt in zip(*loc[::-1]):
+            points.append(pt)
+            cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
+        cv.imwrite("res.png",img_rgb)
+        return points
             
     def fill_grid(self, obs):
         grid = np.zeros((self.xdiv, self.ydiv))
         points = self.find_enemies(obs)
+        bolts = self.find_bolts(obs)
         you = self.find_self(obs)
         self.find_self(obs)
         for point in points:
             xmapped = int(point[0] * self.xdiv // self.xres)
             ymapped = int(point[1] * self.ydiv // self.yres)
-            print(point)
             grid[xmapped][ymapped] = 1
+        for bolt in bolts:
+            xmapped = bolt[0] * self.xdiv // self.xres
+            ymapped = bolt[1] * self.ydiv // self.yres
+            grid[xmapped][ymapped] = 3
         xself = you[0] * self.xdiv // self.xres
         yself = you[1] * self.ydiv // self.yres
-        print(you)
         grid[xself][yself] = 2
         print(grid)
         return grid
