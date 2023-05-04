@@ -43,7 +43,7 @@ class EnemyFinder():
         self.bolts = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
 
         self.missile = cv.imread(f'Template images/missile.png',cv.IMREAD_GRAYSCALE)
-        self.missile = cv.resize(self.bolts, (0, 0), fx = 0.35, fy = 0.35)
+        self.missile = cv.resize(self.missile, (0, 0), fx = 0.35, fy = 0.35)
 
     def find_enemies(self, obs):
         im = obs[0:240,0:190]
@@ -143,7 +143,7 @@ class EnemyFinder():
         for missile in missiles:
             xmapped = missile[0] * self.xdiv // self.xres
             ymapped = missile[1] * self.ydiv // self.yres
-            grid[xmapped][ymapped] = 3
+            grid[xmapped][ymapped] = 4
         if you:
             xself = you[0] * self.xdiv // self.xres
             yself = you[1] * self.ydiv // self.yres
