@@ -105,8 +105,6 @@ class EnemyFinder():
         res = cv.matchTemplate(img_gray,self.bolts,cv.TM_CCOEFF_NORMED)
         threshold = 0.7
         loc = np.where(res>=threshold)
-<<<<<<< HEAD
-=======
         for pt in zip(*loc[::-1]):
             points.append(pt)
             #cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
@@ -122,7 +120,6 @@ class EnemyFinder():
         res = cv.matchTemplate(img_gray,self.missile,cv.TM_CCOEFF_NORMED)
         threshold = 0.7
         loc = np.where(res>=threshold)
->>>>>>> b7fc728bd6d106551a561b9ed3598a9bc0f63b5d
         for pt in zip(*loc[::-1]):
             points.append(pt)
             cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
@@ -144,11 +141,6 @@ class EnemyFinder():
             xmapped = bolt[0] * self.xdiv // self.xres
             ymapped = bolt[1] * self.ydiv // self.yres
             grid[xmapped][ymapped] = 3
-<<<<<<< HEAD
-        xself = you[0] * self.xdiv // self.xres
-        yself = you[1] * self.ydiv // self.yres
-        grid[xself][yself] = 2
-=======
         for missile in missiles:
             xmapped = missile[0] * self.xdiv // self.xres
             ymapped = missile[1] * self.ydiv // self.yres
@@ -158,5 +150,4 @@ class EnemyFinder():
             yself = you[1] * self.ydiv // self.yres
             grid[xself][yself] = 2
         print(grid)
->>>>>>> b7fc728bd6d106551a561b9ed3598a9bc0f63b5d
         return grid
