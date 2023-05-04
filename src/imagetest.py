@@ -123,7 +123,6 @@ class EnemyFinder():
         for pt in zip(*loc[::-1]):
             points.append(pt)
             cv.rectangle(img_rgb, pt, (pt[0] + w, pt[1] + h), (0,0,255), 2)
-        cv.imwrite("res.png",img_rgb)
         return points
             
     def fill_grid(self, obs):
@@ -149,5 +148,4 @@ class EnemyFinder():
             xself = you[0] * self.xdiv // self.xres
             yself = you[1] * self.ydiv // self.yres
             grid[xself][yself] = 2
-        print(grid)
         return grid
