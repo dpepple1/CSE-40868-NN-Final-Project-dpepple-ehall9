@@ -57,9 +57,9 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
             action = np.random.choice(action_space, p=action_probs)
             s_1, r, done, _ = env.step(action)
             step += 1
-            #if step > 1000:
-            #    done = True
-            env.render()
+            if step > 20000:
+                done = True
+            #env.render()
 
             states.append(s_0)
             probs.append(action_probs)
@@ -123,7 +123,7 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
 
 def main():
 
-    mode = 'eval'
+    mode = 'train'
 
     #Setup Gym environment
     env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE)
@@ -131,8 +131,8 @@ def main():
     best_model_path = 'src\\Models\\best_model.pth'
 
     xres, yres, _ = env.observation_space.shape
-    xdiv = xres // 10
-    ydiv = yres // 10
+    xdiv = xres // 5
+    ydiv = yres // 5
 
     #Setup enemy finder 
     ef = EnemyFinder(xres, yres, xdiv, ydiv)
@@ -145,7 +145,7 @@ def main():
 
 
     if mode == 'train':
-        rewards = reinforce(env, model, ef, device, best_model_path, batch_size=5)
+        rewards = reinforce(env, model, ef, device, best_model_path, batch_size=5, gamma = 0.90)
     
     else:
         done = False
