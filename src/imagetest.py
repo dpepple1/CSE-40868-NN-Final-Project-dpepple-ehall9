@@ -126,7 +126,7 @@ class EnemyFinder():
         return points
             
     def fill_grid(self, obs):
-        grid = np.zeros((self.xdiv, self.ydiv))
+        grid = np.zeros((self.xdiv, self.ydiv), dtype=np.float32)
         points = self.find_enemies(obs)
         bolts = self.find_bolts(obs)
         missiles = self.enemy_missile(obs)
