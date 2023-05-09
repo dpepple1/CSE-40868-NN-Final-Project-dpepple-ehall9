@@ -19,7 +19,8 @@ if __name__ == '__main__':
     retro.data.Integrations.add_custom_path(os.path.join(SCRIPT_DIR, "custom_integrations"))
     env = retro.make(game="Galaga (U)", inttype=retro.data.Integrations.ALL)
     env = GalagaDiscretizer(env)
-
+    max_score = 0
+    best_model_path = 'src\\Models\\best_model.pth'
     xres, yres, _ = env.observation_space.shape
     xdiv = xres // 5
     ydiv = yres // 5
@@ -67,7 +68,12 @@ if __name__ == '__main__':
         print('episode ', i, 'score %.2f' % score, 
               'average score %.2f' % avg_score,
               'epsilon %.2f' % agent.epsilon)
-        
+        print(max_score)
+        if score > max_score:
+            max_score = score
+            print('Saving model...')
+            torch.save(agent.Q_eval, best_model_path)
+
     x = [i+1 for i in range(n_games)]
     filename = 'qgraph.png'
     plotLearning(x, scores, eps_history, filename)
