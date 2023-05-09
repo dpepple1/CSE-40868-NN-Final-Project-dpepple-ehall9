@@ -32,4 +32,5 @@ class GalagaDiscretizer(Discretizer):
     based on https://github.com/openai/retro-baselines/blob/master/agents/sonic_util.py
     """
     def __init__(self, env):
-        super().__init__(env=env, combos=[[], ['A'], ['LEFT'], ['RIGHT'], ['LEFT', 'A'], ['RIGHT', 'A']])
+        super().__init__(env=env, combos=[['LEFT', 'A'], ['RIGHT', 'A']])
+        #super().__init__(env=env, combos=[[], ['A'], ['LEFT'], ['RIGHT'], ['LEFT', 'A'], ['RIGHT', 'A']])

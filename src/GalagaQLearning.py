@@ -42,9 +42,24 @@ if __name__ == '__main__':
 
         steps = 0
 
+        same_action = 0
+        prev_action = None
+
         while not done:
             action = agent.choose_action(grid)
+
+            if action == prev_action:
+                same_action += 1
+            else:
+                same_action = 0
+
             observation_, reward, done, info = env.step(action)
+
+
+            if same_action > 20:
+                reward -= 10 * (same_action - 20)
+
+
             env.render()
             score += reward
 
@@ -54,10 +69,10 @@ if __name__ == '__main__':
             agent.store_transition(grid, action, reward, grid_, done)
             agent.learn()
             grid = grid_
-            if steps > 10000:
-                done = True
             
             steps += 1
+
+            prev_action = action
             
 
 
@@ -68,7 +83,6 @@ if __name__ == '__main__':
         print('episode ', i, 'score %.2f' % score, 
               'average score %.2f' % avg_score,
               'epsilon %.2f' % agent.epsilon)
-        print(max_score)
         if score > max_score:
             max_score = score
             print('Saving model...')
