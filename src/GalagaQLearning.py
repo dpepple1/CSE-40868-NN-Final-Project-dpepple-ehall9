@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import retro
 
@@ -13,7 +14,10 @@ from QAgent import Agent
 from utils import plotLearning
 
 if __name__ == '__main__':
-    env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE)
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    print(SCRIPT_DIR)
+    retro.data.Integrations.add_custom_path(os.path.join(SCRIPT_DIR, "custom_integrations"))
+    env = retro.make(game="Galaga (U)", inttype=retro.data.Integrations.ALL)
     env = GalagaDiscretizer(env)
 
     xres, yres, _ = env.observation_space.shape
@@ -21,7 +25,7 @@ if __name__ == '__main__':
     ydiv = yres // 5
 
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=env.action_space.n, 
-                  eps_end= 0.01, input_dims = [xdiv * ydiv], lr=0.003)
+                  eps_end= 0.01, input_dims = [xdiv * ydiv], lr=.0001)
     
     ef = EnemyFinder(xres, yres, xdiv, ydiv)
 
@@ -32,7 +36,7 @@ if __name__ == '__main__':
         done = False
         observation = env.reset()
         grid = ef.fill_grid(observation)
-        print(grid.shape)
+        #print(grid.shape)
         grid = grid.flatten()
 
         steps = 0
