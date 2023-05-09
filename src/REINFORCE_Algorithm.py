@@ -7,6 +7,15 @@ from torch import optim
 from MLP import MLP
 from Discretizer import GalagaDiscretizer
 from imagetest import EnemyFinder
+import os
+
+
+GREEN = '\033[92m'
+RED = '\033[91m'
+YELLOW = '\033[93m'
+CYAN = '\033[96m'
+
+BASE = '\033[0m'
 
 
 #REINFORCE Tutorial From:
@@ -56,6 +65,7 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
             action_probs = policy_estimator(grid).detach().cpu().numpy()
             action = np.random.choice(action_space, p=action_probs)
             s_1, r, done, _ = env.step(action)
+
             step += 1
             if step > 20000:
                 done = True
@@ -65,6 +75,7 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
             probs.append(action_probs)
             rewards.append(r)
             actions.append(action)
+            s_0 = s_1
 
             #If done, batch data
             if done:
@@ -74,7 +85,7 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
                 batch_probs.extend(probs)
                 batch_counter += 1
                 total_rewards.append(sum(rewards))
-                print('Reward: ', sum(rewards))
+                print('Reward: ', sum(rewards), end="\t\t")
 
                 if sum(rewards) > best_reward:
                     print('Saving model...')
@@ -123,16 +134,19 @@ def reinforce(env, policy_estimator, enemy_finder, device, best_model_path, num_
 
 def main():
 
-    mode = 'train'
+    mode = 'eval'
 
     #Setup Gym environment
-    env = retro.make(game="GalagaDemonsOfDeath-Nes", obs_type=retro.Observations.IMAGE)
+    SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+    retro.data.Integrations.add_custom_path(os.path.join(SCRIPT_DIR, "custom_integrations"))
+    env = retro.make(game="Galaga (U)", inttype=retro.data.Integrations.ALL)
+
     env = GalagaDiscretizer(env)
     best_model_path = 'src\\Models\\best_model.pth'
 
     xres, yres, _ = env.observation_space.shape
-    xdiv = xres // 5
-    ydiv = yres // 5
+    xdiv = xres // 10
+    ydiv = yres // 10
 
     #Setup enemy finder 
     ef = EnemyFinder(xres, yres, xdiv, ydiv)

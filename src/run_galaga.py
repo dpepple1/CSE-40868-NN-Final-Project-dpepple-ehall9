@@ -29,15 +29,12 @@ CYAN = '\033[96m'
 
 BASE = '\033[0m'
 
-quit()
-
-model = MLP(xdiv * ydiv, 6)
 
 while True:
     action = env.action_space.sample()
     #print(action)
     obs, rewards, done, info = env.step(0)
-    #print(info)
+    
     if rewards != 0:
         print(rewards)
 
@@ -60,7 +57,6 @@ while True:
     #print(grid_str)
 
     grid = torch.tensor(grid.flatten()).float()
-    action = model(grid)
 
     env.render()
 

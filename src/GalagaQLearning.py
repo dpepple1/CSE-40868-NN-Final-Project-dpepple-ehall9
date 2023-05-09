@@ -44,7 +44,7 @@ if __name__ == '__main__':
         while not done:
             action = agent.choose_action(grid)
             observation_, reward, done, info = env.step(action)
-            #env.render()
+            env.render()
             score += reward
 
             grid_ = ef.fill_grid(observation_)
