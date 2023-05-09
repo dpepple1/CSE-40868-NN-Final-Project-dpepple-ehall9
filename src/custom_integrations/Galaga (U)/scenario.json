@@ -17,12 +17,13 @@
         "reward": 1.0
       },
       "dead": {
-        "penalty": 1000.0
+        "op": "equal",
+        "reference": 1,
+        "reward": -1000.0
       }
     }
   },
   "actions" : [
-  [[], ["LEFT"], ["RIGHT"]],
-  [[], ["Z"]]
+  [[], ["A"], ["LEFT"], ["RIGHT"], ["LEFT", "A"], ["RIGHT", "A"]]
   ]
 }
