@@ -32,7 +32,6 @@ if __name__ == '__main__':
         done = False
         observation = env.reset()
         grid = ef.fill_grid(observation)
-        print(grid.shape)
         grid = grid.flatten()
 
         steps = 0
