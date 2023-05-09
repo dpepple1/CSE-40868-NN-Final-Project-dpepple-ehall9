@@ -3,8 +3,8 @@
     "condition": "all",
     "variables": {
       "dead": {
-        "op": "equal",
-        "reference": 1
+        "op": "not-equal",
+        "reference": 0
       },
       "lives": {
         "op": "zero"
