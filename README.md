@@ -34,12 +34,12 @@ Implemented REINFORCE Algorithm from Towards Data Science article
 Implemented other policy gradient code that we eventually gave up on  
 
 
-##Final Report  
+## Final Report  
 There were sevearl changes made to the code base in the attempt to teach a network to play Galaga. After several changes in image detection, reward function, network architecture and training methods, we found that we were still unable to get a network to play any better than in past attempts. Here are some of the changes we implemented.   
 
 ### Image Detection  
 
 ### Deep Q Learning
 The second major change that we attemped in trying to improve the network was in using Deep Q Learning. In the previous attemps, we were using the REINFORCE policy gradient algorithm to train our network. This involved having the network output a probability for each possible action that it believed would lead to the highest outcome. Alternatively, a Deep Q Network (DQN) attempts to predict the score that would be obtained by the agent for each of the actions in the action space. We call these predictions Q values. When the agent steps once through the environment, the previous guess is compared to the reward that was actually obtained, and the loss is computed. When training, we use a decayed epsilon greedy approach to choosing the action to take based on the network's output. Initially, epsilon starts at 1, meaning that a random action is taken over the networks's predicted highest scoring action 100% of the time. With each step this is decreased until reaching 0.01, where the network now has more control.
-
+ 
 
