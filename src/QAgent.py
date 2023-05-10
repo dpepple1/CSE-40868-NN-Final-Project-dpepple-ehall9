@@ -42,6 +42,7 @@ class Agent():
         if np.random.random() > self.epsilon:
             state = torch.tensor(np.array(observation)).to(self.Q_eval.device) #TODO: check np.ndarray
             actions = self.Q_eval.forward(state)
+            #print(actions)
             action = torch.argmax(actions).item()
         else:
             action = np.random.choice(self.action_space)

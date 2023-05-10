@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ydiv = yres // 5
 
     agent = Agent(gamma=0.99, epsilon=1.0, batch_size=64, n_actions=env.action_space.n, 
-                  eps_end= 0.01, input_dims = [xdiv * ydiv], lr=.0001)
+                  eps_end= 0.01, input_dims = [xdiv * ydiv], lr=.00001)
     
     ef = EnemyFinder(xres, yres, xdiv, ydiv)
 
@@ -42,22 +42,31 @@ if __name__ == '__main__':
 
         steps = 0
 
-        same_action = 0
-        prev_action = None
+        same_place = 0
+        prev_place = None
 
         while not done:
             action = agent.choose_action(grid)
 
-            if action == prev_action:
-                same_action += 1
-            else:
-                same_action = 0
 
+            '''
+            try:
+                ship_pos = np.where(grid==2)[0][0]
+                if ship_pos == prev_place:
+                    same_place += 1
+                else:
+                    same_place = 0
+            except:
+                #print('ERROR:::', end="")
+                pass
+            '''
+                
             observation_, reward, done, info = env.step(action)
 
 
-            if same_action > 20:
-                reward -= 10 * (same_action - 20)
+            if same_place > 15:
+                reward -= 10 * (same_place - 15)
+                #print(f'penalty! : {same_place} {reward}')
 
 
             env.render()
@@ -72,7 +81,7 @@ if __name__ == '__main__':
             
             steps += 1
 
-            prev_action = action
+            #prev_place = ship_pos
             
 
 
