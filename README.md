@@ -79,3 +79,4 @@ Tested some permutations of hyperparameters
 We averaged between 5,500-6,000 points per game, which is not great for a human player, but is better than both a random algorithm and slightly better than our previous network.
 
 ### Conclusion
+In the future we might want to attempt use of a CNN to see if that can better train a model than either of our current approaches. 
